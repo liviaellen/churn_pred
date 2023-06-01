@@ -6,8 +6,8 @@ import requests
 # Churner Prediction
 
 This website predict if a customer will churn or not.'''
-model_path="local"
-#model_path=st.secrets["model_path"]
+# model_path="local"
+model_path=st.secrets["model_path"]
 nb_past_orders = st.number_input('number of past order', value=5)
 avg_basket = st.number_input('Average basket in $', value=50)
 total_purchase_cost = st.number_input('Total purchase cost', value=50)
