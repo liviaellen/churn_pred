@@ -9,6 +9,18 @@ This website predict if a customer will churn or not.'''
 # model_path="local"
 model_path=st.secrets["model_path"]
 
+@st.cache_resource  # 👈 Add the caching decorator
+def load_prep():
+    return joblib.load('scaler_prep.joblib')
+
+
+
+@st.cache_resource  # 👈 Add the caching decorator
+def load_model():
+    return joblib.load('model.joblib')
+
+
+
 
 nb_past_orders = st.number_input('number of past order', value=5)
 avg_basket = st.number_input('Average basket in $', value=50)
@@ -21,17 +33,12 @@ if st.button('Submit'):
     value_to_predict = [nb_past_orders,avg_basket,total_purchase_cost,avg_quantity,total_quantity,avg_nb_unique_products,total_nb_codes]
     if model_path=="local":
         # Data Preparation
-        scaler= joblib.load('scaler_prep.joblib')
+        scaler= load_prep
         scaler.transform([value_to_predict])
         # Load model
-        model = joblib.load('model.joblib')
+        model = load_model()
         # Make prediction
         prediction = model.predict([value_to_predict])
-        # Display
-        if prediction[0]==0:
-            st.write("Churner")
-        else:
-            st.write("Not Churner")
 
     else:
 
@@ -39,10 +46,10 @@ if st.button('Submit'):
 
         response = requests.get(url, params=value_to_predict)
 
-        prediction = response.json()
+        prediction = response.json()['prediction']
 
-        # Display
-        if prediction[0]==0:
-            st.write("Churner")
-        else:
-            st.write("Not Churner")
+    # Display
+    if prediction[0]==0:
+        st.write("Churner")
+    else:
+        st.write("Not Churner")
