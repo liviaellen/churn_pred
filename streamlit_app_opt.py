@@ -33,7 +33,7 @@ if st.button('Submit'):
     value_to_predict = [nb_past_orders,avg_basket,total_purchase_cost,avg_quantity,total_quantity,avg_nb_unique_products,total_nb_codes]
     if model_path=="local":
         # Data Preparation
-        scaler= load_prep
+        scaler= load_prep()
         scaler.transform([value_to_predict])
         # Load model
         model = load_model()
